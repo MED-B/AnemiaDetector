@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from PIL import Image
 import streamlit as st
+import pickle
 
 # Create Title and SubTitle
 st.write("""
@@ -75,12 +76,22 @@ st.write(user_input)
 RandomForestClassifier = RandomForestClassifier()
 RandomForestClassifier.fit(X_train, Y_train)
 
+#Save the model to AnemiaModel.pkl
+
+filename = 'gpr_model.pkl'
+pickle.dump(RandomForestClassifier, open(filename, 'wb'))
+
+# load the model from disk
+loaded_model = pickle.load(open(filename, 'rb'))
+
+
+
 # Show the model metrics
 st.subheader('Model Test Accuracy Score : ')
-st.write(str(accuracy_score(Y_test, RandomForestClassifier.predict(X_test)) * 100) + '%')
+st.write(str(accuracy_score(Y_test, loaded_model.predict(X_test)) * 100) + '%')
 
 # Store the model predictions in a variable
-prediction = RandomForestClassifier.predict(user_input)
+prediction = loaded_model.predict(user_input)
 
 # Set a subheader to predict for user data
 st.subheader('Identification')
